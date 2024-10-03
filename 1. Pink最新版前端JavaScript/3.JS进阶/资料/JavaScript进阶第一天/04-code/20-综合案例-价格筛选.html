@@ -173,6 +173,7 @@
     document.querySelector('.filter').addEventListener('click', e => {
       // e.target.dataset.index   e.target.tagName
       const { tagName, dataset } = e.target
+      console.log(tagName)
       // 判断 
       if (tagName === 'A') {
         // console.log(11) 

@@ -10,15 +10,15 @@
 
 <body>
   <script>
-    // 简单的写法
-    // function outer() {
-    //   let a = 10
-    //   function fn() {
-    //     console.log(a)
-    //   }
-    //   fn()
-    // }
-    // outer()
+    //简单的写法
+   /*  function outer() {
+      let a = 10
+      function fn() {
+        console.log(a)
+      }
+      fn()
+    }
+    outer() */
 
 
     // 常见的闭包的形式   外部可以访问使用 函数内部的变量
@@ -64,7 +64,10 @@
       }
       return fn
     }
-    const fun = count()
+    const fun1 = count()
+    const fun2 = count()
+    fun1()
+    fun2()
   </script>
 </body>
 

@@ -130,11 +130,12 @@
       const { name, price, picture } = item
       str += `
       <div class="item">
-        <img src=${picture} alt="">
+        <img src="${picture}" alt="">
         <p class="name">${name}</p>
         <p class="price">${price}</p>
       </div>
       `
+      console.log(picture)
     })
     // 3.生成的 字符串 添加给 list 
     document.querySelector('.list').innerHTML = str

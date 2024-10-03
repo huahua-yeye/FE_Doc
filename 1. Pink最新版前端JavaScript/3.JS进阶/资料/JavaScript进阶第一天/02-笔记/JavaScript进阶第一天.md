@@ -157,7 +157,7 @@ JavaScript 中除了变量外还有常量，常量与变量本质的区别是【
 总结：
 
 1. 为 `window` 对象动态添加的属性默认也是全局的，不推荐！
-2. 函数中未使用任何关键字声明的变量为全局变量，不推荐！！！
+2. ==函数中未使用任何关键字声明的变量为全局变量==，不推荐！！！
 3. 尽可能少的声明全局变量，防止全局变量被污染
 
 JavaScript 中的作用域是程序被执行时的底层机制，了解这一机制有助于规范代码书写习惯，避免因作用域导致的语法错误。
@@ -186,7 +186,7 @@ JavaScript 中的作用域是程序被执行时的底层机制，了解这一机
 
 如下图所示，父子关系的作用域关联在一起形成了链状的结构，作用域链的名字也由此而来。
 
-作用域链本质上是底层的变量查找机制，在函数被执行时，会优先查找当前函数作用域中查找变量，如果当前作用域查找不到则会依次逐级查找父级作用域直到全局作用域，如下代码所示：
+==作用域链本质上是底层的变量查找机制==，在函数被执行时，会优先查找当前函数作用域中查找变量，如果当前作用域查找不到则会依次逐级查找父级作用域直到全局作用域，如下代码所示：
 
 ```html
 <script>
@@ -222,10 +222,101 @@ JavaScript 中的作用域是程序被执行时的底层机制，了解这一机
 总结：
 
 1. 嵌套关系的作用域串联起来形成了作用域链
-2. 相同作用域链中按着从小到大的规则查找变量
-3. 子作用域能够访问父作用域，父级作用域无法访问子级作用域
+2. 相同作用域链中按着从小到大的规则查找变量,==由远及近==
+3. 子作用域能够访问父作用域，父级作用域无法访问子级作用域（儿子可以继承父亲财产，但父亲不能继承儿子财产，好现实...）==单向==
 
-### 闭包
+
+
+## 垃圾回收机制
+
+### **内存的生命周期**
+
+JS环境中分配的内存, 一般有如下生命周期：
+
+1. **内存分配**：当我们声明变量、函数、对象的时候，系统会自动为他们分配内存
+
+2. **内存使用**：即读写内存，也就是使用变量、函数等
+
+3. **内存回收**：使用完毕，由垃圾回收自动回收不再使用的内存
+
+	全局变量一般不会回收(关闭页面回收)；局部变量的值, 不用了, 会被自动回收掉
+
+4. **内存泄漏**：程序中分配的内存由于某种原因程序**未释放或无法释放**，不是内存露出来/不够用！虽然结局可能会导致内存不够用
+
+
+
+### 垃圾回收机制GC
+
+#### **算法说明**
+
+堆栈空间分配区别：
+
+1. 栈（操作系统）: 由**操作系统**自动分配释放函数的参数值、局部变量等，**基本数据类型**放到栈里面。
+
+2. 堆（操作系统）: 一般由**程序员分配释放**，若程序员不释放，由垃圾回收机制回收。**复杂数据类型**放到堆里面。
+
+
+
+
+<img src="https://2024-2.oss-cn-beijing.aliyuncs.com/typora/image-20241002204018257.png" alt="image-20241002205323861" style="zoom:50%;" />
+
+
+
+<div style="display:flex">
+    <figure style="width:40%;text-align:center;font-weight:bold">
+		<img src="https://2024-2.oss-cn-beijing.aliyuncs.com/typora/image-20241002204156570.png" alt="image-20241002204018257" style="zoom:50%;" />
+        <figcaption>复杂对象赋值为地址</figcaption>
+	</figure>
+	<figure style="width:50% ;text-align:center;font-weight:bold">
+		<img src="https://2024-2.oss-cn-beijing.aliyuncs.com/typora/image-20241002205429667.png" alt="image-20241002204018257" style="zoom:50%;" />
+        <figcaption>基本数据类型在栈 </figcaption>
+	</figure>
+</div>
+
+
+
+
+
+下面介绍两种常见的浏览器垃圾回收算法: **引用计数法 和 标记清除法**
+
+##### 引用计数法
+
+**引用计数**
+
+IE采用的引用计数算法, 定义“内存不再使用”，就是看一个对象是否有指向它的引用，没有引用了就回收对象
+
+**算法**：
+
+1. 跟踪记录被引用的次数
+2. 如果被引用了一次，那么就记录次数1,多次引用会累加 ++
+3. 如果减少一个引用就减1 --
+4. 如果引用次数是0 ，则释放内存
+
+**缺点**：**嵌套引用（循环引用）**
+
+如果两个对象==相互引用==，尽管他们已不再使用，垃圾回收器不会进行回收，导致内存泄露。
+
+<img src="https://2024-2.oss-cn-beijing.aliyuncs.com/typora/image-20241002205756583.png" alt="image-20241002205756583" style="zoom:50%;" />
+
+
+
+##### 标记清除法
+
+现代的浏览器已经不再使用引用计数算法了。
+
+现代浏览器通用的大多是基于标记清除算法的某些改进算法，解决了循环引用的问题
+
+**核心** 
+
+1. 标记清除算法将==“不再使用的对象”定义为“无法达到的对象”==。
+2. 就是从根部（在JS中就是全局对象）出发定时扫描内存中的对象。 凡是能从根部到达的对象，都是还需要使用的。
+3. 那些无法由根部出发触及到的对象被标记为不再使用，稍后进行回收。
+
+![image-20241002210021303](https://2024-2.oss-cn-beijing.aliyuncs.com/typora/image-20241002210021303.png)
+
+
+
+### 闭包 closure
 
 闭包是一种比较特殊和函数，使用闭包能够访问函数作用域中的变量。从代码形式上看闭包是一个做为返回值的函数，如下代码所示：
 
@@ -242,14 +333,16 @@ JavaScript 中的作用域是程序被执行时的底层机制，了解这一机
     // }
     // outer()
 
-    // 2. 闭包的应用： 实现数据的私有。统计函数的调用次数
-    // let count = 1
-    // function fn() {
-    //   count++
-    //   console.log(`函数被调用${count}次`)
-    // }
+  // 2. 闭包的应用： 实现数据的私有。统计函数的调用次数
+  //未使用闭包，count为全局变量，数据篡改
+      let count = 1
+      function fn() {
+      count++
+      console.log(`函数被调用${count}次`)
+     }
 
     // 3. 闭包的写法  统计函数的调用次数
+    // 数据私有
     function outer() {
       let count = 1
       function fn() {
@@ -258,7 +351,11 @@ JavaScript 中的作用域是程序被执行时的底层机制，了解这一机
       }
       return fn
     }
+      
+    outer() === fn === function fn() { }
     const re = outer()
+    
+    
     // const re = function fn() {
     //   count++
     //   console.log(`函数被调用${count}次`)
@@ -273,22 +370,49 @@ JavaScript 中的作用域是程序被执行时的底层机制，了解这一机
 
 总结：
 
-1.怎么理解闭包？
+1.闭包是什么？
 
-- 闭包 = 内层函数 + 外层函数的变量
+- **闭包 = 内层函数 + 外层函数的变量**
+- 私有属性 + Java中getter   ：封闭数据，提供封装方法操作，其他方法不行
+- 属于深克隆
+- **原理**：
+	- 作用域和作用域链：内层函数为什么能使用外层函数的变量？ 
+	- 垃圾回收机制：根据**标记清除法**，re调用一次父函数outer(), 声明了一个变量count，成为子函数fn()的引用（指向函数fn() ），count的生命周期一直到关闭窗口为止，虽然在局部作用域，但相当于全局变量的生命周期，不会被回收，所以可能会引起内存泄漏
+
 
 2.闭包的作用？
 
 - 封闭数据，实现数据私有，外部也可以访问函数内部的变量
 - 闭包很有用，因为它允许将函数与其所操作的某些数据（环境）关联起来
+- 场景：统计函数调用的次数
 
 3.闭包可能引起的问题？
 
 - 内存泄漏
 
-### 变量提升
 
-变量提升是 JavaScript 中比较“奇怪”的现象，它允许在变量声明之前即被访问，
+
+
+
+### 深克隆 vs 浅克隆
+
+- **浅克隆**（Shallow Clone）：
+
+	- 只复制对象的第一层属性，对于对象属性中的引用类型（如对象或数组），浅克隆只复制引用，而不是实际的数据。
+	- 这意味着如果克隆后的对象修改了嵌套的对象或数组，原始对象也会受到影响。
+
+- **深克隆**（Deep Clone）：
+
+	- 递归地复制对象中的所有层次，不仅复制原始对象的基本数据类型，还复制其包含的引用类型（如嵌套的对象和数组）。
+	- 这样即使克隆对象的嵌套结构发生了变化，原始对象也不会受到影响。
+
+	
+
+## 变量提升
+
+变量提升是 JavaScript 中比较“奇怪”的现象，它**允许在变量声明之前即被访问**
+
+在当前作用域运行前，会把var声明的变量提到最前面，但只提升声明，不提升赋值
 
 ```html
 <script>
@@ -298,6 +422,16 @@ JavaScript 中的作用域是程序被执行时的底层机制，了解这一机
   // 声明变量 str
   var str = 'hello ';
 </script>
+
+输出：undefined world
+
+相当于
+<script>
+  var str 
+  console.log(str + 'world!');
+  str = 'hello ';
+</script>
+
 ```
 
 总结：
@@ -309,6 +443,10 @@ JavaScript 中的作用域是程序被执行时的底层机制，了解这一机
 5. 实际开发中推荐先声明再访问变量
 
 注：关于变量提升的原理分析会涉及较为复杂的词法分析等知识，而开发中使用 `let` 可以轻松规避变量的提升，因此在此不做过多的探讨，有兴趣可[查阅资料](https://segmentfault.com/a/1190000013915935)。
+
+<img src="https://2024-2.oss-cn-beijing.aliyuncs.com/typora/image-20241003000419671.png" alt="image-20241003000419671" style="zoom:50%;" />
+
+
 
 ## 函数
 
@@ -328,10 +466,16 @@ JavaScript 中的作用域是程序被执行时的底层机制，了解这一机
   }
 
   // 不存在提升现象
+  //提升的时候只提升声明，不提升赋值
   bar()  // 错误
   var bar = function () {
     console.log('函数表达式不存在提升现象...')
   }
+  ——————相当于——————
+  提升的时候只提升声明，不提升赋值,bar甚至不是一个函数，当然不能当函数调用（）
+  var bar
+  bar()
+  bar
 </script>
 ```
 
@@ -339,7 +483,7 @@ JavaScript 中的作用域是程序被执行时的底层机制，了解这一机
 
 1. 函数提升能够使函数的声明调用更灵活
 2. 函数表达式不存在提升的现象
-3. 函数提升出现在相同作用域当中
+3. **函数提升出现在相同作用域当中**
 
 ### 函数参数
 
@@ -368,7 +512,7 @@ JavaScript 中的作用域是程序被执行时的底层机制，了解这一机
 
 #### 动态参数
 
-`arguments` 是函数内部内置的伪数组变量，它包含了调用函数时传入的所有实参。
+`arguments` 是==函数内部内置的伪数组变量，它包含了调用函数时传入的所有实参==。
 
 ```html
 <script>
@@ -394,6 +538,8 @@ JavaScript 中的作用域是程序被执行时的底层机制，了解这一机
 
 #### 剩余参数
 
+只存在于函数中
+
 ```html
 <script>
   function config(baseURL, ...other) {
@@ -410,9 +556,56 @@ JavaScript 中的作用域是程序被执行时的底层机制，了解这一机
 1. `...` 是语法符号，置于最末函数形参之前，用于获取多余的实参
 2. 借助 `...` 获取的剩余实参，是个真数组
 
+<img src="https://2024-2.oss-cn-beijing.aliyuncs.com/typora/image-20241003002623908.png" alt="image-20241003002623908" style="zoom:50%;" />
+
+#### 展开运算符
+
+1. 不会修改原数组
+2. 典型运用场景：求数组最大值（最小值）、合井数组等
+
+```js
+const arr =[1,2,3]
+console.log(...arr)
+...arr === 1,2,3
+
+//求数组最大值
+Math.max(1,2,3)
+Math.max(...arr)
+
+//合并数组
+arr2=[4,5,6]
+array3=[...arr,...arr2]
+```
+
+![image-20241003003429838](https://2024-2.oss-cn-beijing.aliyuncs.com/typora/image-20241003003429838.png)
+
+
+
+
+
 ### 箭头函数
 
 箭头函数是一种声明函数的简洁语法，它与普通函数并无本质的区别，差异性更多体现在语法格式上。
+
+**目的**：引入箭头函数的目的是更简短的函数写法并且不绑定this，箭头函数的语法比函数表达式更简洁
+
+**使用场景**：箭头函数更适用于那些本来需要匿名函数的地方
+
+**基本语法**：
+
+```js
+箭头替代fun（函数名）
+fun () {} //传统函数
+() => {}  //箭头函数
+```
+
+**简写**：省略小括号的情形
+
+​			省略大括号的情形
+
+​			省略return的情形
+
+<img src="https://2024-2.oss-cn-beijing.aliyuncs.com/typora/image-20241003004858913.png" alt="image-20241003004858913" style="zoom:50%;" />
 
 ```html
 <body>
@@ -420,7 +613,7 @@ JavaScript 中的作用域是程序被执行时的底层机制，了解这一机
     // const fn = function () {
     //   console.log(123)
     // }
-    // 1. 箭头函数 基本语法
+    1. 箭头函数 基本语法
     // const fn = () => {
     //   console.log(123)
     // }
@@ -429,18 +622,19 @@ JavaScript 中的作用域是程序被执行时的底层机制，了解这一机
     //   console.log(x)
     // }
     // fn(1)
-    // 2. 只有一个形参的时候，可以省略小括号
+    2. 只有一个形参的时候，可以省略小括号，没有参数or参数数量>=2都不能省小括号
     // const fn = x => {
     //   console.log(x)
     // }
     // fn(1)
-    // // 3. 只有一行代码的时候，我们可以省略大括号
+    3. 只有一行代码的时候，我们可以省略大括号，并自动当做返回值返回
     // const fn = x => console.log(x)
     // fn(1)
-    // 4. 只有一行代码的时候，可以省略return
+    4. 只有一行代码的时候，可以省略return
     // const fn = x => x + x
     // console.log(fn(1))
-    // 5. 箭头函数可以直接返回一个对象
+    5. 箭头函数可以直接返回一个对象
+    const fn = (uname) => { uname: uname } 此时这里的大括号不能被解析成对象外面的大括号，而是函数体的大括号，所以要加上圆括号来区分
     // const fn = (uname) => ({ uname: uname })
     // console.log(fn('刘德华'))
 
@@ -452,11 +646,15 @@ JavaScript 中的作用域是程序被执行时的底层机制，了解这一机
 
 1. 箭头函数属于表达式函数，因此不存在函数提升
 2. 箭头函数只有一个参数时可以省略圆括号 `()`
-3. 箭头函数函数体只有一行代码时可以省略花括号 `{}`，并自动做为返回值被返回
+3. 箭头函数函数体只有一行代码时可以省略花括号 `{}`，==并自动做为返回值被返回==
 
 #### 箭头函数参数
 
+普通函数有arguments动态参数
+
 箭头函数中没有 `arguments`，只能使用 `...` 动态获取实参
+
+箭头函数没有 arguments 动态参数，但是有剩余参数..args
 
 ~~~html
 <body>
@@ -474,13 +672,17 @@ JavaScript 中的作用域是程序被执行时的底层机制，了解这一机
   </script>
 ~~~
 
-#### 箭头函数 this
 
-箭头函数不会创建自己的this,它只会从自己的作用域链的上一层沿用this。
+
+#### 箭头函数 this, 学完普通函数的this后回去重听
+
+箭头函数不会创建自己的this,它只会从自己的==作用域链的上一层**沿用**this==，即上一级作用域的this
+
+普通函数找爹，箭头函数找牛爷爷
 
 ~~~html
  <script>
-    // 以前this的指向：  谁调用的这个函数，this 就指向谁
+    普通函数this的指向：  谁调用的这个函数，this 就指向谁
     // console.log(this)  // window
     // // 普通函数
     // function fn() {
@@ -497,15 +699,24 @@ JavaScript 中的作用域是程序被执行时的底层机制，了解这一机
     // obj.sayHi()
 
     // 2. 箭头函数的this  是上一层作用域的this 指向
-    // const fn = () => {
-    //   console.log(this)  // window
+     纠结的点：1.fn()上一级作用域<script>
+             2.上一级作用域object的this？对象有this吗
+     简便方法：window.fn() 没有上两级，已经到头了，所以取window
+     		 obj.sayHi.count()，取object
+         
+    // const fn = () => 
+     console.log(this)      沿用上一级script的this，指向window
     // }
-    // fn()
+     fn()					并不是因为window.fn()调用函数才指向window
+							而是window.script?
     // 对象方法箭头函数 this
     // const obj = {
     //   uname: 'pink老师',
     //   sayHi: () => {
-    //     console.log(this)  // this 指向谁？ window
+         console.log(this)  this 指向谁? -- window
+                            	 不是obj.sayHi()
+     				 			 沿用上一级obj的this， -- window.obj
+         						 理解为 window.obj.sayHi()
     //   }
     // }
     // obj.sayHi()
@@ -518,13 +729,36 @@ JavaScript 中的作用域是程序被执行时的底层机制，了解这一机
         const count = () => {
           console.log(this)  // obj 
         }
-        count()
+        count()     		  ---  sayHi.count(),this并不指向sayHi()
       }
     }
-    obj.sayHi()
+    obj.sayHi()				  ---  指向obj.sayHi.count()
 
   </script>
 ~~~
+
+<img src="https://2024-2.oss-cn-beijing.aliyuncs.com/typora/image-20241003020023802.png" alt="image-20241003020023802" style="zoom:50%;" />
+
+
+
+
+
+<div style="display:flex">
+    <figure style="width:40%;text-align:center;font-weight:bold">
+		<img src="https://2024-2.oss-cn-beijing.aliyuncs.com/typora/image-20241003012254871.png" alt="image-20241002204018257" style="zoom:50%;" />
+        <figcaption>DOM事件回调使用this的场景</figcaption>
+	</figure>
+	<figure style="width:50% ;text-align:center;font-weight:bold">
+		<img src="https://2024-2.oss-cn-beijing.aliyuncs.com/typora/image-20241003012633784.png" alt="image-20241002204018257" style="zoom:50%;" />
+        <figcaption>小结</figcaption>
+	</figure>
+</div>
+
+
+
+
+
+
 
 ## 解构赋值
 
@@ -534,7 +768,7 @@ JavaScript 中的作用域是程序被执行时的底层机制，了解这一机
 
 ### 数组解构
 
-数组解构是将数组的单元值快速批量赋值给一系列变量的简洁语法，如下代码所示：
+数组解构是==**将数组的单元值(元素)快速批量赋值给一系列变量**==的简洁语法，如下代码所示：
 
 ```html
 <script>
@@ -546,22 +780,74 @@ JavaScript 中的作用域是程序被执行时的底层机制，了解这一机
   console.log(a); // 1
   console.log(b); // 2
   console.log(c); // 3
+    
+   //普通写法
+  let a=arr[2]
+  let b=arr[1]
+  let c=arr[2]
 </script>
 ```
 
-总结：
+总结：**例子见html文件**
 
 1. 赋值运算符 `=` 左侧的 `[]` 用于批量声明变量，右侧数组的单元值将被赋值给左侧的变量
+
 2. 变量的顺序对应数组单元值的位置依次进行赋值操作
-3. 变量的数量大于单元值数量时，多余的变量将被赋值为  `undefined`
-4. 变量的数量小于单元值数量时，可以通过 `...` 获取剩余单元值，但只能置于最末位
-5. 允许初始化变量的默认值，且只有单元值为 `undefined` 时默认值才会生效
+
+3. **变量的数量大于单元值数量时**，多余的变量将被赋值为  `undefined`
+
+4. **变量的数量小于单元值数量时**，可以通过==剩余参数== `...arg` 获取剩余单元值，但只能置于最末位
+
+5. 允许**初始化变量的默认值**，且只有**数组单元值**为 `undefined` 时默认值才会生效
+
+6. **按需导入**  `const [a，，c，d]=['小米'，‘苹果'，‘华为'，‘格力']`
+
+7. **多维数组**  `const [a, b, [c, d]] = [1, 2, [3, 4]]`, 无需`array[2][1]`
+
+8. **应用场景**
+
+	- 快速互换变量值，无需temp中间量 
+
+	```js
+	let a = 1
+	let b = 2;  这里必须加分号！！！
+	[b,a]=[a,b]
+	```
+
+	-  冒泡排序
+
+<div style="display:flex">
+    <figure style="width:50%;text-align:center;font-weight:bold">
+		<img src="https://2024-2.oss-cn-beijing.aliyuncs.com/typora/image-20241003143612050.png" alt="image-20241002204018257" style="zoom:50%;" />
+        <figcaption>temp中间量</figcaption>
+	</figure>
+	<figure style="width:50% ;text-align:center;font-weight:bold">
+		<img src="https://2024-2.oss-cn-beijing.aliyuncs.com/typora/image-20241003143634534.png" alt="image-20241002204018257" style="zoom:50%;" />
+        <figcaption>数组解构</figcaption>
+	</figure>
+</div>
 
 注：支持多维解构赋值，比较复杂后续有应用需求时再进一步分析
 
+
+
+#### **js必须加分号的情况**
+
+![image-20241003162635762](https://2024-2.oss-cn-beijing.aliyuncs.com/typora/image-20241003162635762.png)
+
+
+
+数组前面不加分号会被解析为赋值到上一行变量
+
+![image-20241003162511496](https://2024-2.oss-cn-beijing.aliyuncs.com/typora/image-20241003162511496.png)
+
+
+
+
+
 ### 对象解构
 
-对象解构是将对象属性和方法快速批量赋值给一系列变量的简洁语法，如下代码所示：
+对象解构是**将对象属性和方法快速批量赋值给一系列变量的简洁语法**，如下代码所示：
 
 ```html
 <script>
@@ -582,15 +868,47 @@ JavaScript 中的作用域是程序被执行时的底层机制，了解这一机
 总结：
 
 1. 赋值运算符 `=` 左侧的 `{}` 用于批量声明变量，右侧对象的属性值将被赋值给左侧的变量
-2. 对象属性的值将被赋值给与属性名相同的变量
-3. 对象中找不到与变量名一致的属性时变量值为 `undefined`
-4. 允许初始化变量的默认值，属性不存在或单元值为 `undefined` 时默认值才会生效
+2. 对象属性的值将被赋值给与属性名==相同==的变量(因为对象是无序的)，且解构的变量名不要和外面的变量名相冲突
+3. 变量重命名 **旧变量名：新变量名** 
+	`*const { uname: username, age } = { uname: 'pink老师', age: 18 }*`
+4. 对象中找不到与变量名一致的属性时变量值为 `undefined`
+5. 允许初始化变量的默认值，属性不存在或单元值为 `undefined` 时默认值才会生效
 
-注：支持多维解构赋值
+6. 数组对象解构 
+
+	```js
+	const pig = [
+	      {
+	        uname: '佩奇',
+	        age: 6
+	      }
+	 ]
+	const [{ uname, age }] = pig
+	```
+
+7. 多级对象解构 **前面需要写出内部对象名（family）**
+
+	```js
+	const person = [
+	      {
+	        name: '佩奇',
+	        family: {
+	          mother: '猪妈妈',
+	          father: '猪爸爸',
+	          sister: '乔治'
+	        },
+	        age: 6
+	      }
+	    ]
+	const [{ name, family: { mother, father, sister } }] = person
+	```
+
+	
 
 ~~~html
 <body>
   <script>
+      
     // 1. 这是后台传递过来的数据
     const msg = {
       "code": 200,
@@ -619,6 +937,7 @@ JavaScript 中的作用域是程序被执行时的底层机制，了解这一机
     // const { data } = msg
     // console.log(data)
     // 需求2： 上面msg是后台传递过来的数据，我们需要把data选出当做参数传递给 函数
+    传参时解构
     // const { data } = msg
     // msg 虽然很多属性，但是我们利用解构只要 data值
     function render({ data }) {
@@ -642,6 +961,28 @@ JavaScript 中的作用域是程序被执行时的底层机制，了解这一机
   </script>
 ~~~
 
+8. 事件解构
+
+```js
+document.querySelector('.filter').addEventListener('click', e => {
+      // e.target.dataset.index   e.target.tagName
+      const { tagName, dataset } = e.target
+      console.log(e.target.dataset)
+      // 判断 
+      if (tagName === 'A') {document.querySelector('.filter').addEventListener('click', e => {
+      // e.target.dataset.index   e.target.tagName
+      const { tagName, dataset } = e.target
+      console.log(e.target.dataset)
+      // 判断 
+      if (tagName === 'A') {
+```
+
+
+
+
+
+
+
 ## 综合案例
 
 ### forEach遍历数组
@@ -659,6 +1000,7 @@ forEach() 方法用于调用数组的每个元素，并将元素传递给回调�
   <script>
     // forEach 就是遍历  加强版的for循环  适合于遍历数组对象
     const arr = ['red', 'green', 'pink']
+    //传入回调函数function(){}
     const result = arr.forEach(function (item, index) {
       console.log(item)  // 数组元素 red  green pink
       console.log(index) // 索引号
@@ -670,7 +1012,7 @@ forEach() 方法用于调用数组的每个元素，并将元素传递给回调�
 
 ### filter筛选数组
 
-filter() 方法创建一个新的数组，新数组中的元素是通过检查指定数组中符合条件的所有元素
+filter() 方法==创建一个新的数组==，新数组中的元素是通过检查指定数组中符合条件的所有元素
 
 主要使用场景： 筛选数组符合条件的元素，并返回筛选之后元素的新数组
 
@@ -691,5 +1033,17 @@ filter() 方法创建一个新的数组，新数组中的元素是通过检查�
 </body>
 ~~~
 
+```js
+document.querySelector('.filter').addEventListener('click', e => {
+      // e.target.dataset.index   e.target.tagName
+      const { tagName, dataset } = e.target
+      console.log(e.target.dataset)
+      // 判断 
+      if (tagName === 'A') {
+```
 
+1. 点击采取事件委托方式.filter
+2. 筛选条件是根据点击的data-index来判断
+3. 可以使用对象解构，把事件对象解构
+4. 因为全部区间不需要筛选，直接把goodList渲染即可
 
