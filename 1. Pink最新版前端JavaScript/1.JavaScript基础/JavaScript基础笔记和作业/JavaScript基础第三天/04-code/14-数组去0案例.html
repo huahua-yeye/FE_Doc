@@ -14,11 +14,15 @@
     // 1. 声明一个新的数组
     let newArr = []
     // 2. 遍历筛选
-    for (let i = 0; i < arr.length; i++) {
-      if (arr[i] !== 0) {
-        newArr.push(arr[i])
-      }
+    for (let i=0;i<arr.length;i++){
+      arr[i]!==0?newArr.push(arr[i]):newArr;
     }
+
+    // for (let i = 0; i < arr.length; i++) {
+    //   if (arr[i] !== 0) {
+    //     newArr.push(arr[i])
+    //   }
+    // }
     // 输出新数组
     console.log(newArr)
   </script>

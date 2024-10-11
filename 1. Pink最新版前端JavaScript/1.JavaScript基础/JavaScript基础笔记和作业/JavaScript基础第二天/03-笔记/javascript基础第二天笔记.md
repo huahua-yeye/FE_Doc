@@ -6,8 +6,15 @@
 - 语句
 - 综合案例
 
-
 ## 运算符
+
+### **一元运算符**
+
+`-`,`+`，只需要一个元素,`+`可以使字符串变为Number类型
+
+`--`,`++`
+
+
 
 ### 算术运算符
 
@@ -69,7 +76,7 @@ console.log(num)
 </script>
 ```
 
-### 自增/自减运算符
+### 自增/自减运算符(一元)
 
 | 符号 | 作用 | 说明                       |
 | ---- | ---- | -------------------------- |
@@ -89,23 +96,25 @@ console.log(num)
     // let num = 10
     // num = num + 1
     // num += 1
-    // // 1. 前置自增
+    // // 1. 前置自增  先自加再使用
     // let i = 1
     // ++i
     // console.log(i)
 
     // let i = 1
-    // console.log(++i + 1)
-    // 2. 后置自增
+    // console.log(++i + 1) // 3
+    
+    
+    // 2. 后置自增     先使用(进行后一个运算符)再自加
     // let i = 1
     // i++
     // console.log(i)
     // let i = 1
-    // console.log(i++ + 1)
+    // console.log(i++ + 1) //2
 
     // 了解 
     let i = 1
-    console.log(i++ + ++i + i)
+    console.log(i++ + ++i + i)   //i++ =1  i=2 -> ++i=3  i=3 -> i=3 即1+3+3
   </script>
 ```
 
@@ -139,7 +148,9 @@ console.log(num)
   console.log(2 !== '2')  // true  
   console.log(2 != '2') // false 
   console.log('-------------------------')
+  字符串的ASCII比较
   console.log('a' < 'b') // true
+  从头开始往后一位位比较
   console.log('aa' < 'ab') // true
   console.log('aa' < 'aac') // true
   console.log('-------------------------')
@@ -190,13 +201,15 @@ console.log(num)
 
 ### 运算符优先级
 
- ![67101652103](D:/2023%E8%A7%86%E9%A2%91/javascript%E5%9F%BA%E7%A1%80/JavaScript%E5%9F%BA%E7%A1%80%E7%AC%AC%E4%B8%80%E5%A4%A9/02-%E7%AC%94%E8%AE%B0/assets/1671016521031.png)
+ ![image-20241004205636560](https://2024-2.oss-cn-beijing.aliyuncs.com/typora/image-20241004205636560.png)
 
 > 逻辑运算符优先级： ！> && >  ||  
 
 ## 语句
 
 ### 表达式和语句
+
+赋值行为算是语句
 
 ![67101792498](assets/1671017924981.png)
 
@@ -225,6 +238,9 @@ if(条件表达式) {
 小括号内的条件结果是布尔值，为 true 时，进入大括号里执行代码；为false，则不执行大括号里面代码
 
 小括号内的结果若不是布尔类型时，会发生类型转换为布尔值，类似Boolean()
+
+> false：0，空字符串
+> true：0以外，空字符串以外
 
 如果大括号只有一个语句，大括号可以省略，但是，俺们不提倡这么做~
 
@@ -352,15 +368,23 @@ num = num >= 10 ? num : 0 + num
 alert(num)
 ~~~
 
+
+
+
+
+
+
 #### switch语句（了解）
 
 使用场景： 适合于有多个条件的时候，也属于分支语句，大部分情况下和 if多分支语句 功能相同
 
 注意：
 
-1. switch case语句一般用于等值判断, if适合于区间判断
-2. switchcase一般需要配合break关键字使用 没有break会造成case穿透
+1. switch case语句一般用于==等值判断==, if适合于区间判断
+2. switchcase一般==需要配合break关键字使用==没有break会造成case穿透
 3. if 多分支语句开发要比switch更重要，使用也更多
+4. 执行效率比if高
+5. 语法 **switch() case: break**
 
 例如：
 
@@ -481,9 +505,9 @@ while (i <= end) {
 
 #### 中止循环
 
-`break`   中止整个循环，一般用于结果已经得到, 后续的循环不需要的时候可以使用（提高效率）  
+`break`   ==中止整个循环==，一般用于结果已经得到, 后续的循环不需要的时候可以使用（提高效率）  
 
-`continue`  中止本次循环，一般用于排除或者跳过某一个选项的时候
+`continue`  ==中止本次循环==，一般用于排除或者跳过某一个选项的时候
 
 ~~~javascript
 <script>
@@ -601,7 +625,6 @@ while (true) {
 }
 </script>
 ~~~
-
 
 
 

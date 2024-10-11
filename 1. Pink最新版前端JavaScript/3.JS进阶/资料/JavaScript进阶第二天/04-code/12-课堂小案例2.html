@@ -11,7 +11,23 @@
 <body>
   <div></div>
   <script>
-    const gift = '50g的茶叶,清洗球'
+
+    /*思路：
+    ①：把字符串拆分为数组，这样两个赠品就拆分开了用那个方法？split(",)
+    ②：利用map遍历数组，同时把数组元素生成到span里面，并且返回
+    ③：因为返回的是数组，所以需要转换为字符串，用那个方法？join('')*/
+
+    const gift = '50g的茶叶,清洗球,茶杯,茶壶'
+    gift_arr = gift.split(',')
+    console.log(gift_arr)
+    console.log(gift_arr.toString())
+    //map() 返回一个数组 [<div></div>,<div></div>,<><>,<><>],所以直接写进去会变成"<div></div>,<div></div>"array.toString()的结果
+    //正确做法是将返回的数组再转换成字符串！！！
+    // document.querySelector('div').innerHTML = gift_arr.map (item=>`<div>[赠品] ${item} </div>`)
+
+
+    document.querySelector('div').innerHTML = gift_arr.map (item=>`<div>[赠品] ${item} </div>`).join(',')
+
     // 1. 把字符串拆分为数组
     // console.log(gift.split(',')) [,]
     // 2. 根据数组元素的个数，生成 对应 span标签
@@ -21,7 +37,7 @@
 
     // // console.log(str)
     // document.querySelector('div').innerHTML = str
-    document.querySelector('div').innerHTML = gift.split(',').map(item => `<span>【赠品】 ${item}</span> <br>`).join('')
+    // document.querySelector('div').innerHTML = gift.split(',').map(item => `<span>【赠品】 ${item}</span> <br>`).join('')
   </script>
 </body>
 

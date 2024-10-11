@@ -21,6 +21,14 @@
       salary: 20000
     },
     ]
+
+    const sum = arr.reduce((prev,item)=>prev.salary+item.salary)
+    console.log(sum)
+    const salary = arr.map(item => item.salary)
+    console.log(salary)
+
+
+
     // 涨薪的钱数  10000 * 0.3 
     // const money = arr.reduce(function (prev, item) {
     //   return prev + item.salary * 0.3

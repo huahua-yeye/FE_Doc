@@ -6,6 +6,18 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Document</title>
+  <style>
+    span{
+      display: inline-block;
+      width: 60px;
+      padding: 5px 10px;
+      border: 1px solid pink;
+      margin:5px;
+      border-radius: 5px;
+      box-shadow: 0 0 5px pink;
+      color:hotpink;
+    }
+  </style>
 </head>
 
 <body>
@@ -20,17 +32,29 @@
     //   document.write('<br>')
     // }
 
-    let row = +prompt('请输入行数:')
-    let col = +prompt('请输入列数:')
-    // 外层循环打印行数
-    for (let i = 1; i <= row; i++) {
+
+  for (let i = 1; i <= 5; i++) {
       // 里层循环打印几个星星
-      for (let j = 1; j <= col; j++) {
+      for (let j = 1; j <= i; j++) {
         document.write('☆')
       }
       // 进行换行显示
       document.write('<br>')
     }
+
+
+    // let row = +prompt('请输入行数:')
+    // let col = +prompt('请输入列数:')
+    // 外层循环打印行数
+    for (let i = 1; i <= 9; i++) {
+      // 里层循环打印几个星星
+      for (let j = 1; j <= i; j++) {
+        document.write(`<span>${i}*${j}=${i*j}</span>`)
+      }
+      // 进行换行显示
+      document.write('<br>')
+     }
+
   </script>
 </body>
 

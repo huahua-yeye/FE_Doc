@@ -12,6 +12,18 @@
   <script>
     // let arr = [5, 4, 3, 2, 1]
     let arr = [2, 4, 3, 5, 1]
+
+
+    for (let i=0;i<arr.length-1;i++){  // 外层循环控制比较的轮数.arr[i]为该轮比较的元素
+        for (let j=0; j<arr.length-i-1;j++)   // 内层循环控制每一轮比较的次数
+        {
+            arr[j]>arr[j+1]? [arr[j],arr[j+1]]=[arr[j+1],arr[j]] : null;
+            }
+        }
+    console.log(arr)
+
+
+
     // for (let i = 0; i < arr.length - 1; i++) {
     //   for (let j = 0; j < arr.length - i - 1; j++) {
     //     // 开始交换 但是前提 第一个数大于第二个数才交换
@@ -29,10 +41,10 @@
     //   return a - b
     // })
     // sort() 降序
-    arr.sort(function (a, b) {
-      return b - a
-    })
-    console.log(arr)
+    // arr.sort(function (a, b) {
+    //   return b - a
+    // })
+    // console.log(arr)
 
     // let num1 = 10
     // let num2 = 20

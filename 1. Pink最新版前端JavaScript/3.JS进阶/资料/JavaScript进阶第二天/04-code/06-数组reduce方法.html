@@ -10,21 +10,23 @@
 
 <body>
   <script>
-    // arr.reduce(function(累计值, 当前元素){}, 起始值)
-    // arr.reduce(function (prev, item) {
-    //   // console.log(11)
-    //   // console.log(prev)
+    const arr = [1, 2, 10]
+    // let sum
+    // //arr.reduce(function(累计值, 当前元素){}, 起始值)
+    // sum1 = arr.reduce(function (prev, item) {
     //   return prev + item
-    // }, 0)
-    // arr.reduce(function (prev, item) {
-    //   console.log(11)
-    //   // console.log(prev)
+    // }, 10)
+    // console.log(sum1)
+
+    // sum2 = arr.reduce(function (prev, item) {
     //   return prev + item
     // })
 
-    const arr = [1, 2, 3]
-    const re = arr.reduce((prev, item) => prev + item)
+    // console.log(sum2)
+
+    const re = arr.reduce((prev, item) => prev * item, 10)
     console.log(re)
+    
   </script>
 </body>
 

@@ -14,31 +14,36 @@
 
 ### 构造函数
 
-构造函数是专门用于创建对象的函数，如果一个函数使用 `new` 关键字调用，那么这个函数就是构造函数。
+构造函数是==专门用于创建对象的函数==，如果一个函数使用 `new` 关键字调用，那么这个函数就是构造函数，可以用来快速创建多个类似的对象。
+
+**convention**
+
+> 1. 它们的命名以大写字母开头。
+> 2. 它们只能由"new”操作符来执行
 
 ```html
 <script>
   // 定义函数
-  function foo() {
+  function Foo() {
     console.log('通过 new 也能调用函数...');
   }
   // 调用函数
-  new foo;
+  new Foo;
 </script>
 ```
 
 总结：
 
-2. 使用 `new` 关键字调用函数的行为被称为实例化
-3. 实例化构造函数时没有参数时可以省略 `()`
+2. 使用 `new` 关键字调用函数的行为被称为==实例化==
+3. 实例化构造函数时==没有参数时可以省略 `()`==
 4. 构造函数的返回值即为新创建的对象
 5. 构造函数内部的 `return` 返回的值无效！
 
-注：实践中为了从视觉上区分构造函数和普通函数，习惯将构造函数的首字母大写。
+注：实践中为了从视觉上区分构造函数和普通函数，==习惯将构造函数的首字母大写==。
 
-### 实例成员
+### 实例成员（实例属性&实例方法）
 
-通过构造函数创建的对象称为实例对象，实例对象中的属性和方法称为实例成员。
+通过构造函数创建的对象称为实例对象，==实例对象中的属性和方法称为实例成员==。
 
 ```html
 <script>
@@ -68,9 +73,22 @@
 
 注：构造函数创建的实例对象彼此独立互不影响。
 
+
+
+面试题：创建新对象时发生了什么
+
+1. 堆中创建新对象
+2. this指向新对象
+3. 执行构造函数代码，修改this，添加新的属性
+4. 返回新对象
+
+
+
+
+
 ### 静态成员
 
-在 JavaScript 中底层函数本质上也是对象类型，因此允许直接为函数动态添加属性或方法，构造函数的属性和方法被称为静态成员。
+在 JavaScript 中底层==函数本质上也是对象类型==，因此允许直接==在外面==为函数动态添加属性或方法，构造函数的属性和方法被称为静态成员。
 
 ```html
 <script>
@@ -93,8 +111,14 @@
 总结：
 
 1. 静态成员指的是添加到构造函数本身的属性和方法
-2. 一般公共特征的属性或方法静态成员设置为静态成员
+2. 一般==公共特征的属性或方法==静态成员设置为静态成员
 3. 静态成员方法中的 `this` 指向构造函数本身
+4. 静态成员只能通过构造函数来访问
+5. 应用：Date.now()   Math.PI   Math.random() 可以直接拿来使用
+
+
+
+
 
 ## 内置构造函数
 
@@ -116,9 +140,13 @@
 
 甚至字符串、数值、布尔、数组、普通对象也都有专门的构造函数，用于创建对应类型的数据。
 
+
+
+
+
 ### Object
 
-`Object` 是内置的构造函数，用于创建普通对象。
+`Object` 是==内置的构造函数，用于创建普通对象==。
 
 ```html
 <script>
@@ -150,13 +178,17 @@
 总结：
 
 1. 推荐使用字面量方式声明对象，而不是 `Object` 构造函数
-2. `Object.assign` 静态方法创建新的对象
-3. `Object.keys` 静态方法获取对象中所有属性
-4. `Object.values` 表态方法获取对象中所有属性值
+2. `copying = Object.assign(copying,being copied)` 静态方法创建新的对象，拷贝对象，追加属性
+3. `arr = Object.keys(Foo)` 静态方法获取对象中所有属性（键）,返回一个数组
+4. `arr = Object.values(Foo)` 表态方法获取对象中所有属性值,返回一个数组
+
+
 
 ### Array
 
 `Array` 是内置的构造函数，用于创建数组。
+
+![image-20241005002220050](https://2024-2.oss-cn-beijing.aliyuncs.com/typora/image-20241005002220050.png)
 
 ```html
 <script>
@@ -173,35 +205,91 @@
 
 总结：
 
+<img src="https://2024-2.oss-cn-beijing.aliyuncs.com/typora/image-20241005011411789.png" alt="image-20241005011411789" style="zoom:50%;" />
+
 1. 推荐使用字面量方式声明数组，而不是 `Array` 构造函数
-
 2. 实例方法 `forEach` 用于遍历数组，替代 `for` 循环 (重点)
-
-3. 实例方法 `filter` 过滤数组单元值，生成新数组(重点)
-
+3. 实例方法 `filter` 过滤数组单元值，生成==新数组(重点)==
 4. 实例方法 `map` 迭代原数组，生成新数组(重点)
-
 5. 实例方法 `join` 数组元素拼接为字符串，返回字符串(重点)
-
-6. 实例方法  `find`  查找元素， 返回符合测试条件的第一个数组元素值，如果没有符合条件的则返回 undefined(重点)
-
+6. 实例方法  `find`  查找元素， 返回符合测试条件的==第一个数组元素值==，如果没有符合条件的则返回 undefined(重点)
 7. 实例方法`every` 检测数组所有元素是否都符合指定条件，如果**所有元素**都通过检测返回 true，否则返回 false(重点)
-
 8. 实例方法`some` 检测数组中的元素是否满足指定条件   **如果数组中有**元素满足条件返回 true，否则返回 false
-
 9. 实例方法 `concat`  合并两个数组，返回生成新数组
-
 10. 实例方法 `sort` 对原数组单元值排序
-
 11. 实例方法 `splice` 删除或替换原数组单元
-
 12. 实例方法 `reverse` 反转数组
-
 13. 实例方法 `findIndex`  查找元素的索引值
+14. 实例方法 `reduce`  查找元素的索引值
+15. 静态方法`from`将==伪数组转换为真数组==
 
-    ​
+```js
+const lis = document.querySelectorAll('ul li')
+// console.log(lis)
+// lis.pop() 报错
+const liss = Array.from(lis)
+liss.pop()
+console.log(liss)
+```
 
-### 包装类型
+
+
+<div style="display:flex">
+    <figure style="width:40%;text-align:center;font-weight:bold">
+    <img src="https://2024-2.oss-cn-beijing.aliyuncs.com/typora/image-20241005003708209.png" alt="image-20241002204018257" style="zoom:50%;" />
+        <figcaption></figcaption>
+  </figure>
+  <figure style="width:50% ;text-align:center;font-weight:bold">
+    <img src="https://2024-2.oss-cn-beijing.aliyuncs.com/typora/image-20241005003729569.png" alt="image-20241002204018257" style="zoom:50%;" />
+        <figcaption> </figcaption>
+  </figure>
+</div>
+
+```js
+----- arr.reduce(function(累计值, 当前元素){}, 起始值) ----
+ 	const arr = [1, 2, 3]
+    
+    const sum = arr.reduce(function (prev, item) {
+      return prev + item
+    }, 0)
+    console.log(sum)
+    
+    const re = arr.reduce((prev, item) => prev + item, initValue)
+    console.log(re)
+```
+
+
+
+**没有初始值**
+
+![image-20241005005535576](https://2024-2.oss-cn-beijing.aliyuncs.com/typora/image-20241005005535576.png)
+
+
+
+**有初始值**
+
+<img src="https://2024-2.oss-cn-beijing.aliyuncs.com/typora/image-20241005005720582.png" alt="image-20241005005720582" style="zoom: 80%;" />
+
+易错：如果遇到数组里面是对象，不写初始值默认为对象，一定要写初始值！！
+
+```js
+const sum = arr.reduce((prev,item) => prev+item.salary,0)
+console.log(sum)
+
+
+ 错误写法！！第一次返回值为数值，数值没有属性，所以只能用上面的写法
+ const sum = arr.reduce((prev,item)=>prev.salary+item.salary)
+ console.log(sum)
+
+```
+
+
+
+
+
+
+
+### 基本包装类型
 
 在 JavaScript 中的字符串、数值、布尔具有对象的使用特征，如具有属性和方法，如下代码举例：
 
@@ -220,6 +308,8 @@
 ```
 
 之所以具有对象特征的原因是字符串、数值、布尔类型数据是 JavaScript 底层使用 Object 构造函数“包装”来的，被称为包装类型。
+
+
 
 #### String
 
@@ -242,10 +332,10 @@
 总结：
 
 1. 实例属性 `length` 用来获取字符串的度长(重点)
-2. 实例方法 `split('分隔符')` 用来将字符串拆分成数组(重点)
-3. 实例方法 `substring（需要截取的第一个字符的索引[,结束的索引号]）` 用于字符串截取(重点)
+2. 实例方法 `split('分隔符')` 用来将字符串拆分成数组==(重点)==，`join('分隔符')`将数组转换为字符串
+3. 实例方法 `substring（需要截取的第一个字符的索引[,结束的索引号(不包括)]）` 用于字符串截取(重点)
 4. 实例方法 `startsWith(检测字符串[, 检测位置索引号])` 检测是否以某字符开头(重点)
-5. 实例方法 `includes(搜索的字符串[, 检测位置索引号])` 判断一个字符串是否包含在另一个字符串中，根据情况返回 true 或 false(重点)
+5. 实例方法 `includes(搜索的字符串[, 检测位置索引号])` 判断一个字符串是否包含在另一个字符串中，根据情况返回 true 或 false(重点)，==区分大小写！！==
 5. 实例方法 `toUpperCase` 用于将字母转换成大写
 7. 实例方法 `toLowerCase` 用于将就转换成小写
 8. 实例方法 `indexOf`  检测是否包含某字符
@@ -274,11 +364,21 @@
 总结：
 
 1. 推荐使用字面量方式声明数值，而不是 `Number` 构造函数
-2. 实例方法 `toFixed` 用于设置保留小数位的长度
+2. 实例方法 `toFixed` 用于设置保留小数位的长度，四舍五入
 
 
 
 
+
+```js
+ const str = 'pink'
+ console.log(str.length)
+ const num = 12
+ console.log(num.toFixed(2))
+ const str = 'pink'
+ js 底层完成， 把简单数据类型包装为了引用数据类型
+ const str = new String('pink')
+```
 
 
 

@@ -42,7 +42,7 @@
 
 ## 构造函数
 
-对比以下通过面向对象的构造函数实现的封装：
+对比以下通过==面向对象的构造函数实现的封装==：
 
 ```html
 <script>
@@ -84,14 +84,31 @@
 
 前面我们学过的构造函数方法很好用，但是 存在`浪费内存`的问题
 
-## 原型对象
 
-构造函数通过原型分配的函数是所有对象所 共享的。
 
-- JavaScript 规定，每一个构造函数都有一个 prototype 属性，指向另一个对象，所以我们也称为原型对象
-- 这个对象可以挂载函数，对象实例化不会多次创建原型上函数，节约内存
-- 我们可以把那些不变的方法，直接定义在 prototype 对象上，这样所有对象的实例就可以共享这些方法。
-- 构造函数和原型对象中的this 都指向 实例化的对象
+
+
+## 原型对象（数据类型是一个对象）
+
+栈中会给每个变量开一个内存地址，导致浪费内存
+
+<img src="https://2024-2.oss-cn-beijing.aliyuncs.com/typora/image-20241006212028040.png" alt="image-20241006212028040" style="zoom:50%;" />
+
+
+
+**解决方案：原型对象**
+
+
+
+构造函数==通过原型分配的函数是所有对象所 共享==的。
+
+- 原型是==静态成员==，指向一个对象，所以在构造函数{}外面定义
+
+- JavaScript 规定，每一个==构造函数都有一个 prototype 属性==，==指向另一个对象==，所以我们也称为原型对象
+- 这个对象可以==挂载函数==，对象实例化不会多次创建原型上函数，节约内存
+- 我们可以把那些==不变的方法，直接定义在 prototype 对象上==，这样所有对象的实例就可以共享这些方法。
+- 构造函数和原型对象中的==this 都指向 实例化的对象==
+	函数中的this，谁调用的就指向谁
 
 ```html
 <script>
@@ -148,9 +165,11 @@
 </script>
 ```
 
+
+
 构造函数 `Person` 中定义与原型对象中相同名称的方法，这时实例对象调用则是构造函中的方法 `sayHi`。
 
-通过以上两个简单示例不难发现 JavaScript 中对象的工作机制：**当访问对象的属性或方法时，先在当前实例对象是查找，然后再去原型对象查找，并且原型对象被所有实例共享。**
+通过以上两个简单示例不难发现 JavaScript 中对象的工作机制：**当访问对象的属性或方法时，==先在当前实例对象是查找，然后再去原型对象查找，并且原型对象被所有实例共享，有点类似于java override继承的方法==。**
 
 ```html
 <script>
@@ -178,12 +197,18 @@
 
 总结：**结合构造函数原型的特征，实际开发重往往会将封装的功能函数添加到原型对象中。**
 
+
+
+
+
 ### constructor 属性
 
 
 在哪里？ 每个原型对象里面都有个constructor 属性（constructor 构造函数）
 
-作用：该属性指向该原型对象的构造函数， 简单理解，就是指向我的爸爸，我是有爸爸的孩子
+作用：该属性==指向该原型对象的构造函数==， 简单理解，就是指向我的爸爸，我是有爸爸的孩子
+
+
 
 **使用场景：**
 
@@ -191,12 +216,30 @@
 
 但是这样就会覆盖构造函数原型对象原来的内容，这样修改后的原型对象 constructor 就不再指向当前构造函数了
 
-此时，我们可以在修改后的原型对象中，添加一个 constructor 指向原来的构造函数。
+此时，我们可以在==修改后的原型对象中，添加一个 constructor 指向原来的构造函数==。
 
-### 对象原型
+![image-20241007010959336](https://2024-2.oss-cn-beijing.aliyuncs.com/typora/image-20241007010959336.png)
+
+<div style="display:flex">
+    <figure style="width:50%;text-align:center;font-weight:bold">
+    <img src="https://2024-2.oss-cn-beijing.aliyuncs.com/typora/image-20241007010144893.png" alt="image-20241002204018257" style="zoom:100%;" />
+        <figcaption>prototype对象未添加constructor属性</figcaption>
+  </figure>
+  <figure style="width:50% ;text-align:center;font-weight:bold">
+    <img src="https://2024-2.oss-cn-beijing.aliyuncs.com/typora/image-20241007010240263.png" alt="image-20241002204018257" style="zoom:100%;" />
+        <figcaption>prototype对象添加constructor属性</figcaption>
+  </figure>
+</div>
 
 
-对象都会有一个属性 __proto__ 指向构造函数的 prototype 原型对象，之所以我们对象可以使用构造函数 prototype 
+
+
+
+
+
+### 对象原型（对象的原型，其实也是一个对象）
+
+==对象都会有一个属性 __proto__ 指向构造函数的 prototype 原型对象==，之所以我们对象可以使用构造函数 prototype 
 
 原型对象的属性和方法，就是因为对象有 __proto__ 原型的存在。
 
@@ -205,17 +248,64 @@
 - __proto__ 是JS非标准属性
 - [[prototype]]和__proto__意义相同
 - 用来表明当前实例对象指向哪个原型对象prototype
-- __proto__对象原型里面也有一个 constructor属性，指向创建该实例对象的构造函数
+- __proto__对象原型里面==也有一个 constructor属性，指向创建该实例对象的构造函数==
+- 只读，只能获取不能赋值
+
+==两个杠杠！== 对象原型指向原型对象
+
+`instance.__proto__ === Foo.prototype`
+
+![image-20241007013535416](https://2024-2.oss-cn-beijing.aliyuncs.com/typora/image-20241007013535416.png)
+
+
 
 
 
 ### 原型继承
 
-继承是面向对象编程的另一个特征，通过继承进一步提升代码封装的程度，JavaScript 中大多是借助原型对象实现继承
+继承是面向对象编程的另一个特征，通过继承进一步提升代码封装的程度，==JavaScript 中大多是借助原型对象实现继承==
 
 的特性。
 
 龙生龙、凤生凤、老鼠的儿子会打洞描述的正是继承的含义。
+
+**问题**
+
+现在Man和Woman都用同一个对象Person，如果想在Woman.prototype上加一个方法baby()，相当于在Person上加一个方法，那么Man也会拥有baby()
+
+为啥不在Woman()的构造函数里面加啊？？？
+
+<div style="display:flex">
+    <figure style="width:50%;text-align:center;font-weight:bold">
+    <img src="https://2024-2.oss-cn-beijing.aliyuncs.com/typora/image-20241007145806942.png"" alt="image-20241002204018257" style="zoom:100%;" />
+        <figcaption></figcaption>
+  </figure>
+  <figure style="width:50% ;text-align:center;font-weight:bold">
+    <img src="https://2024-2.oss-cn-beijing.aliyuncs.com/typora/image-20241007152045020.png" alt="image-20241002204018257" style="zoom:100%;" />
+        <figcaption></figcaption>
+  </figure>
+</div>
+
+```js
+Woman和Man的prototype在栈中应该是同一个地址？？？
+Woman.prototype = Person
+Man.prototype = Person
+```
+
+**解决方案**![image-20241007152436966](https://2024-2.oss-cn-beijing.aliyuncs.com/typora/image-20241007152436966.png)
+
+```js
+const Person={} 改成构造函数
+function Person(){}
+Woman.prototype = new Person()
+Man.prototype = new Person()
+```
+
+![image-20241007152736291](https://2024-2.oss-cn-beijing.aliyuncs.com/typora/image-20241007152736291.png)
+
+
+
+
 
 ```html
 <body>
@@ -268,9 +358,7 @@
 
 ### 原型链
 
-基于原型对象的继承使得不同构造函数的原型对象关联在一起，并且这种关联的关系是一种链状的结构，我们将原型对
-
-象的链状结构关系称为原型链
+基于原型对象的继承使得不同构造函数的原型对象关联在一起，并且这种关联的关系是一种链状的结构，我们将原型对象的链状结构关系称为原型链
 
 ![67679338869](assets/1676793388695.png)
 
@@ -306,7 +394,18 @@
 
 ⑤ __proto__对象原型的意义就在于为对象成员查找机制提供一个方向，或者说一条路线
 
-⑥ 可以使用 instanceof 运算符用于检测构造函数的 prototype 属性是否出现在某个实例对象的原型链上
+⑥ ==可以使用 instanceof 运算符用于检测构造函数的 prototype 属性是否出现在某个实例对象的原型链上==
 
 
 
+## 总结：
+
+1. （对象实例的）原型对象 proto 指向（对象实例构造函数的）对象原型 prototype
+
+2. 原型对象和对象原型的constructor都指向各自的构造函数
+
+3. 原型对象的链状结构关系称为==原型链==
+
+	![67679338869](assets/1676793388695.png)
+
+![image-20241007160431525](https://2024-2.oss-cn-beijing.aliyuncs.com/typora/image-20241007160431525.png)
