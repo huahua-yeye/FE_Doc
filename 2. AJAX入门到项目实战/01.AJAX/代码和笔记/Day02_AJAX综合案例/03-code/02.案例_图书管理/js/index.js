@@ -3,7 +3,7 @@
  *  1.1 获取数据
  *  1.2 渲染数据
  */
-const creator = '老张'
+const creator = '老李搜索'
 // 封装-获取并渲染图书列表函数
 function getBooksList() {
   // 1.1 获取数据
@@ -95,7 +95,7 @@ document.querySelector('.list').addEventListener('click', e => {
       // 3.3 刷新图书列表
       getBooksList()
     })
-  }
+  } 
 })
 
 /**
@@ -111,7 +111,7 @@ const editModal = new bootstrap.Modal(editDom)
 document.querySelector('.list').addEventListener('click', e => {
   // 判断点击的是否为编辑元素
   if (e.target.classList.contains('edit')) {
-    // 4.2 获取当前编辑图书数据->回显到编辑表单中
+    // 4.2 获取当前编辑图书数据->回显到编辑表单中  
     const theId = e.target.parentNode.dataset.id
     axios({
       url: `http://hmajax.itheima.net/api/books/${theId}`

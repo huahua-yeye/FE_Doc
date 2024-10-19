@@ -49,7 +49,7 @@
 
    A：获取到这次触发事件相关的信息
 
-   B：获取到这次触发事件目标标签元素
+   B：获取到这次触发事件==目标标签元素==
 
    <details>
    <summary>答案</summary>
@@ -100,15 +100,15 @@
 
 
 
-6. 伪数组取值哪种方式是正确的?
+6. ==伪数组取值==哪种方式是正确的?
 
    ```js
    let obj = { 0: '老李', 1: '老刘' }
    ```
    
-   A: obj.0
+   A: obj.0      **obj.property**
    
-   B: obj[0]
+   B: obj[0]    
    
    <details>
    <summary>答案</summary>
@@ -287,7 +287,7 @@
 
    ![image-20230404105858660](images/image-20230404105858660.png)
 
-3. 如何使用 Bootstrap 弹框呢？
+3. **如何使用 Bootstrap 弹框呢？**
 
    1. 先引入 bootstrap.css 和 bootstrap.js 到自己网页中
 
@@ -401,7 +401,7 @@
 
 1. 为什么需要 JS 方式控制呢？
 
-   * 当我显示之前，隐藏之前，需要执行一些 JS 逻辑代码，就需要引入 JS 控制弹框显示/隐藏的方式了
+   * 当我显示之前，隐藏之前，需要执行一些 JS==**额外逻辑代码**==，就需要引入 JS 控制弹框显示/隐藏的方式了
 
    * 例如：
 
@@ -686,7 +686,7 @@
      // 判断点击的是删除元素
      if (e.target.classList.contains('del')) {
        // console.log('点击删除元素')
-       // 获取图书id（自定义属性id）
+       // 获取图书id，绑在了父级上（用dataset获取父级自定义属性id）
        const theId = e.target.parentNode.dataset.id
        // console.log(theId)
        // 3.2 调用删除接口
@@ -737,7 +737,7 @@
 3. 编辑数据的核心思路：
 
    1. 给编辑元素，绑定点击事件（事件委托方式并判断点击的是编辑元素才走编辑逻辑代码），并获取到要编辑的数据id
-   2. 基于 axios 和接口文档，调用查询图书详情接口，获取正在编辑的图书数据，并回显到表单中（页面上的数据是在用户的浏览器中不够准备，所以只要是查看数据都要从服务器获取）
+   2. 基于 axios 和接口文档，调用查询图书详情接口，获取正在编辑的图书数据，并**回显到表单**中（页面上的数据是在用户的浏览器中不够准确，所以只要是查看数据都要从服务器获取）
 
       ![image-20230404111739153](images/image-20230404111739153.png)
    3. 收集并提交保存修改数据，并重新从服务器获取列表刷新页面
@@ -993,7 +993,7 @@
    * 因为浏览器保存是临时的，如果你想随时随地访问图片，需要上传到服务器上
 4. 图片上传怎么做呢？
    1. 先获取图片文件对象
-   2. 使用 FormData 表单数据对象装入（因为图片是文件而不是以前的数字和字符串了所以传递文件一般需要放入 FormData 以键值对-文件流的数据传递（可以查看请求体-确认请求体结构）
+   2. 使用 FormData 表单数据对象装入（因为图片是文件而不是以前的数字和字符串了所以传递文件一般需要放入 **FormData 以键值对-文件流的数据传递**（可以查看请求体-确认请求体结构）
 
       ```js
       const fd = new FormData()
@@ -1065,6 +1065,52 @@
    <li>先用文件选择元素，获取到文件对象，然后装入 FormData 表单对象中，再发给服务器，得到图片在服务器的 URL 网址，再通过 img 标签加载图片显示</li>
    </ul>
    </details>
+
+
+
+2. 请求Body 参数：multipart/form-data ,前端如何传数据到后端？
+
+	<details>
+	<summary>答案</summary>
+	<ul>
+	    <li>使用 FormData 携带图片文件, key + value</li>
+	    <div>  const fd = new FormData() </div>
+	    <div>  fd.append('img', e.target.files[0]) </div>
+	</ul>
+	</details>
+
+
+
+ 3.  图片上传前端选择元素结构有哪些？
+
+	<details>
+	<summary>答案</summary>
+	<ul>
+	<li> <input type="file" class="upload"> </li>
+	    
+	      <!-- 用label input（display：none）实现替换默认文字“选择文件”，注意for和id的属性值要一致才能进行关联捏
+		  <label for="bg">更换背景</label>
+	      <input class="bg-ipt" type="file" id="bg">
+		  -->
+	    
+	</ul>
+	</details>
+
+
+
+4. <label></label>的作用？
+
+	<details>
+	<summary>答案</summary>
+	<ul>
+	<li>扩大表单的交互范围</li>
+	<li>可以关联原tag (input)并且设置隐藏 (display:none)，点击lable相当于点击原tag</li>
+	</ul>
+	</details>
+
+	
+
+
 
 
 

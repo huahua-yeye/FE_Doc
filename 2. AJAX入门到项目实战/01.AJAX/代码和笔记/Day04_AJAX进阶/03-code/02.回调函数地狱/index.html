@@ -33,7 +33,7 @@
     */
     // 1. 获取默认第一个省份的名字
     axios({url: 'http://hmajax.itheima.net/api/province'}).then(result => {
-      const pname = result.data.list[0]
+      const pname = result.data.list[1]
       document.querySelector('.province').innerHTML = pname
       // 2. 获取默认第一个城市的名字
       axios({url: 'http://hmajax.itheima.net/api/city', params: { pname }}).then(result => {

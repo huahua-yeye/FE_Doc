@@ -24,6 +24,7 @@
     // 文件选择元素->change改变事件
     document.querySelector('.upload').addEventListener('change', e => {
       // 1. 获取图片文件
+      console.log(e)
       console.log(e.target.files[0])
       // 2. 使用 FormData 携带图片文件
       const fd = new FormData()

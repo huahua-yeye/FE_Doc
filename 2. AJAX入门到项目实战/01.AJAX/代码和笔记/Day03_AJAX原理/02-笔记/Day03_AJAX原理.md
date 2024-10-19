@@ -132,15 +132,23 @@
 
 1. AJAX 是浏览器与服务器通信的技术，采用 XMLHttpRequest 对象相关代码
 
-2. axios 是对 XHR 相关代码进行了封装，让我们只关心传递的接口参数
+2. axios 是对 XHR 相关代码进行了==封装==，让我们只关心传递的接口参数
 
-3. 学习 XHR 也是了解 axios 内部与服务器交互过程的真正原理
+3. 学习 XHR 也是了解 axios 内部与服务器交互过程的真正原理![image-20241013225237031](https://2024-2.oss-cn-beijing.aliyuncs.com/typora/image-20241013225237031.png)
 
    ![image-20230221182835545](images/image-20230221182835545.png)
 
 4. 语法如下：
 
    ```js
+   /**
+        * 目标：使用XMLHttpRequest对象与服务器通信
+        *  1. 创建 XMLHttpRequest 对象
+        *  2. 配置请求方法和请求 url 地址
+        *  3. 监听 loadend 事件，接收响应结果
+        *  4. 发起请求
+       */
+   
    const xhr = new XMLHttpRequest()
    xhr.open('请求方法', '请求url网址')
    xhr.addEventListener('loadend', () => {
@@ -230,9 +238,24 @@
    <details>
    <summary>答案</summary>
    <ul>
-   <li>1. 创建 XHR 对象 2. 调用 open 方法，设置 url 和请求方法 3. 监听 loadend 事件，接收结果 4. 调用 send 方法，发起请求</li>
+   	  <li>1. 创建 XHR 对象</li>
+         <li> 2. 调用 open 方法，设置 url 和请求方法</li>
+         <li>3. 监听 loadend 事件，接收结果</li>
+         <li>4. 调用 send 方法，发起请求</li>
    </ul>
    </details>
+
+4.  XHR 和axios对 JS对象 和 JSON字符串 的封装 & 返回内容有什么不同有何不同？
+
+   <details>
+   <summary>答案</summary>
+   <ul>
+   <li>axios返回数据会将JSON字符串转换成JS对象</li>
+   <li>axios会将结果挂载到data属性后</li>
+   </ul>
+   </details>
+   
+   
 
 
 
@@ -309,7 +332,7 @@
      参数名2: 值2
    })
    
-   // 2. 生成指定格式查询参数字符串
+   // 2. 生成指定格式查询参数字符串，URL编码
    const queryString = paramsObj.toString()
    // 结果：参数名1=值1&参数名2=值2
    ```
@@ -348,11 +371,11 @@
 
 3. 步骤和语法：
 
-   1. 注意1：但是这次没有 axios 帮我们了，我们需要自己设置请求头 Content-Type：application/json，来告诉服务器端，我们发过去的内容类型是 JSON 字符串，让他转成对应数据结构取值使用
+   1. 注意1：但是这次没有 axios 帮我们了，我们需要==自己设置请求头 Content-Type：application/json==，来告诉服务器端，我们发过去的内容类型是 JSON 字符串，让他转成对应数据结构取值使用
 
-   2. 注意2：没有 axios 了，我们前端要传递的请求体数据，也没人帮我把 JS 对象转成 JSON 字符串了，需要我们自己转换
+   2. 注意2：没有 axios 了，我们前端要传递的请求体数据，也没人帮我==把 JS 对象转成 JSON 字符串了，需要我们自己转换==
 
-   3. 注意3：原生 XHR 需要在 send 方法调用时，传入请求体携带
+   3. 注意3：原生 XHR 需要在 send 方法调用时，==传入请求体携带==
 
       ```js
       const xhr = new XMLHttpRequest()
@@ -426,7 +449,7 @@
 
 1. 什么是 Promise ？
 
-   * Promise 对象用于表示一个异步操作的最终完成（或失败）及其结构值
+   * Promise 对象用于表示==一个异步操作的最终完成（或失败）及其结构值==
 
 2. Promise 的好处是什么？
 
@@ -540,7 +563,7 @@
 
    ![image-20230222120815484](images/image-20230222120815484.png)
 
-4. 注意：每个 Promise 对象一旦被兑现/拒绝，那就是已敲定了，状态无法再被改变
+4. 注意：每个 Promise 对象一旦被兑现/拒绝，那就是已敲定了，==状态无法再被改变==
 
 
 
@@ -588,7 +611,9 @@
 
    2. 执行 XHR 异步代码，获取省份列表数据
 
-   3. 关联成功或失败回调函数，做后续的处理
+   3. 通过XHR status code 判断响应成功还是失败
+
+   4. ==关联成功或失败回调函数==，做后续的处理
 
       > 错误情况：用地址错了404演示
 
@@ -663,6 +688,8 @@
    ![image-20230222130217597](images/image-20230222130217597.png)
 
 2. 核心语法：
+
+   ==说明封装好的axios请求返回一个promise对象,属性data携带从服务器获得的数据结果==
 
    ```js
    function myAxios(config) {

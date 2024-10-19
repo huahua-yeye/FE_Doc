@@ -25,4 +25,5 @@ document.querySelector('.bg-ipt').addEventListener('change', e => {
 // 3. 网页运行后，"获取"url网址使用
 const bgUrl = localStorage.getItem('bgImg')
 console.log(bgUrl)
+console.log(document)
 bgUrl && (document.body.style.backgroundImage = `url(${bgUrl})`)
